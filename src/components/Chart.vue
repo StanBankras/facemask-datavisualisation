@@ -39,7 +39,8 @@
             :width="barWidth"
             :y="height - yAxis(bar) - 40"
             :x="xSubgroup(bars.age) + barWidth * i"
-            :fill="filteredGender ? filteredGender.name === 'Man' ? 'pink' : 'blue' : i === 0 ? 'blue' : 'pink'"
+            :fill="filteredGender ? filteredGender.name === 'Man' ? femaleColor : maleColor : i === 0 ? maleColor : femaleColor"
+            style="stroke: #55828B; stroke-width: 1px"
           />
           <text
             fill="currentColor"
@@ -164,7 +165,9 @@ export default {
       height: 300,
       xPadding: 5,
       yPadding: 40,
-      windowWidth: window.innerWidth
+      windowWidth: window.innerWidth,
+      maleColor: '#C9DBFF',
+      femaleColor: '#FFC9FD'
     }
   },
   mounted() {
