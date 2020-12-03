@@ -52,6 +52,9 @@ export default {
   methods: {
     toggle(name, category) {
       const found = this.filters[category].find(x => x.name === name);
+      if(this.filters[category].filter(x => x.active).length === 1 && found.active) {
+        return;
+      }
       found.active = !found.active;
       this.$emit('update', this.filters);
     }

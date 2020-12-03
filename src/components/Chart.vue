@@ -1,22 +1,43 @@
 <template>
   <div>
     <svg :width="width" :height="height" ref="chart">
-      <g
-        :transform="`translate(${ i * group.data.length * barWidth * 3 }, 0)`"
-        v-for="(group, i) in filteredResults"
-        :key="group.name">
+      <g fill="none" id="x-axis" >
+        <path stroke="black" :d="`M0.5,6V0.5H${ width - xPadding - 40 }.5V6`" :transform="`translate(${ yPadding },${ height - 40})`"/>
+      </g>
+      <g class="bars" :transform="`translate(${ yPadding + 20 }, 0)`">
         <g
-          v-for="bars in group.data"
-          :key="bars.age">
-          <rect
-            v-for="(bar, i) in bars.data"
-            :key="bar.age"
-            :height="yAxis(bar)"
-            :width="barWidth"
-            :y="height - yAxis(bar)"
-            :x="xSubgroup(bars.age) + barWidth * i"
-            :fill="filteredGender ? filteredGender.name === 'Man' ? 'pink' : 'blue' : i === 0 ? 'blue' : 'pink'"
-          />
+          :transform="`translate(${ i * group.data.length * barWidth * 3 }, 0)`"
+          v-for="(group, i) in filteredResults"
+          :key="group.name">
+          <g
+            v-for="bars in group.data"
+            :key="bars.age">
+            <rect
+              v-for="(bar, i) in bars.data"
+              :key="bar.age"
+              :height="yAxis(bar)"
+              :width="barWidth"
+              :y="height - yAxis(bar) - 40"
+              :x="xSubgroup(bars.age) + barWidth * i"
+              :fill="filteredGender ? filteredGender.name === 'Man' ? 'pink' : 'blue' : i === 0 ? 'blue' : 'pink'"
+            />
+            <text
+              fill="currentColor"
+              style="font-size: 10px;"
+              :y="height - 30"
+              dy="0.71em"
+              :x="xSubgroup(bars.age)">
+              {{ bars.age.split(' ')[0] }}
+            </text>
+          </g>
+          <text
+            fill="currentColor"
+            style="font-size: 10px;"
+            :y="height - 15"
+            dy="0.71em"
+            :x="0">
+            {{ group.name }}
+          </text>
         </g>
       </g>
     </svg>
@@ -37,8 +58,8 @@ export default {
       return [...new Set(...data.map(d => d.map(x => x.age)))];
     },
     heighest() {
-      const data = this.filteredResults.map(r => r.data[0].data);
-      return Math.max(...data.flat());
+      const data = this.filteredResults.map(r => r.data.map(x => x.data));
+      return Math.max(...data.flat().flat());
     },
     xAxis() {
       return scaleBand()
@@ -55,11 +76,14 @@ export default {
     yAxis() {
       return scaleLinear()
         .domain([0, this.heighest])
-        .range([0, this.height]);
+        .range([0, this.height - 40]);
+    },
+    yTicks() {
+      return this.yAxis.ticks(8);
     },
     barWidth() {
       const data = this.filteredResults.map(r => r.data[0].data).flat();
-      return this.width / (data.length * 2 * 3);
+      return this.width / (data.length * (this.filteredGender ? 3 : 2) * this.filteredResults[0].data.length);
     },
     filteredGender() {
       return this.filters.gender.find(f => !f.active);
@@ -104,7 +128,6 @@ export default {
 
       // Filter male/female
       results = results.map(d => {
-        console.log(this.filteredGender);
         return {
           name: d.name,
           data: d.data.map(x => {
@@ -121,9 +144,10 @@ export default {
   },
   data() {
     return {
-      width: 1000,
-      height: 200,
+      width: 600,
+      height: 300,
       xPadding: 5,
+      yPadding: 40,
       results: [
         {
           name: 'Wegwerp',
