@@ -13,7 +13,7 @@
     <h2>Ontdek de data</h2>
     <p>Klik op welke data je wel of niet wilt weergeven</p>
     <filters :initial="filterGroups" @update="f => filterGroups = f"/>
-    <chart/>
+    <chart :filters="filterGroups"/>
   </div>
 </template>
 
@@ -89,7 +89,7 @@ export default {
 #app {
   background-color: var(--white);
   width: 100vw;
-  max-width: 414px;
+  /* max-width: 414px; */
   height: 100vh;
   overflow-x: hidden;
   padding: 2rem;
