@@ -1,47 +1,66 @@
 <template>
-  <div>
-    <svg :width="width" :height="height" ref="chart">
-      <g fill="none" id="x-axis" >
-        <path stroke="black" :d="`M0.5,6V0.5H${ width - xPadding - 40 }.5V6`" :transform="`translate(${ yPadding },${ height - 40})`"/>
+  <svg :width="width" :height="height" ref="chart">
+    <g fill="none" id="x-axis" >
+      <path stroke="black" :d="`M0.5,6V0.5H${ width - xPadding - 40 }.5V6`" :transform="`translate(${ yPadding },${ height - 40})`"/>
+    </g>
+    <g class="y-axis" fill="none">
+      <path
+        class="domain"
+        stroke="currentColor"
+        :d="`M0.5,${height - yPadding}.5H0.5V0.5H-6`"
+        :transform="`translate(${ yPadding }, 0)`"
+      ></path>
+      <g
+        v-for="tick in yTicks"
+        :key="tick"
+        class="tick"
+        opacity="1"
+        font-size="10"
+        font-family="sans-serif"
+        text-anchor="end"
+        :transform="`translate(${ yPadding }, ${height - yAxis(tick) - yPadding})`"
+      >
+        <line stroke="currentColor" x2="-6"></line>
+        <text fill="currentColor" x="-9" dy="0.32em">{{ tick }}</text>
       </g>
-      <g class="bars" :transform="`translate(${ yPadding + 20 }, 0)`">
+    </g>
+    <g class="bars" :transform="`translate(${ yPadding + 20 }, 0)`">
+      <g
+        :transform="`translate(${ i * group.data.length * barWidth * 3 }, 0)`"
+        v-for="(group, i) in filteredResults"
+        :key="group.name">
         <g
-          :transform="`translate(${ i * group.data.length * barWidth * 3 }, 0)`"
-          v-for="(group, i) in filteredResults"
-          :key="group.name">
-          <g
-            v-for="bars in group.data"
-            :key="bars.age">
-            <rect
-              v-for="(bar, i) in bars.data"
-              :key="bar.age"
-              :height="yAxis(bar)"
-              :width="barWidth"
-              :y="height - yAxis(bar) - 40"
-              :x="xSubgroup(bars.age) + barWidth * i"
-              :fill="filteredGender ? filteredGender.name === 'Man' ? 'pink' : 'blue' : i === 0 ? 'blue' : 'pink'"
-            />
-            <text
-              fill="currentColor"
-              style="font-size: 10px;"
-              :y="height - 30"
-              dy="0.71em"
-              :x="xSubgroup(bars.age)">
-              {{ bars.age.split(' ')[0] }}
-            </text>
-          </g>
+          v-for="bars in group.data"
+          :key="bars.age">
+          <rect
+            v-for="(bar, i) in bars.data"
+            :key="bar.age"
+            :height="yAxis(bar)"
+            :width="barWidth"
+            :y="height - yAxis(bar) - 40"
+            :x="xSubgroup(bars.age) + barWidth * i"
+            :fill="filteredGender ? filteredGender.name === 'Man' ? 'pink' : 'blue' : i === 0 ? 'blue' : 'pink'"
+          />
           <text
             fill="currentColor"
             style="font-size: 10px;"
-            :y="height - 15"
+            :y="height - 30"
             dy="0.71em"
-            :x="0">
-            {{ group.name }}
+            :x="xSubgroup(bars.age)">
+            {{ bars.age.split(' ')[0] }}
           </text>
         </g>
+        <text
+          fill="currentColor"
+          style="font-size: 10px;"
+          :y="height - 15"
+          dy="0.71em"
+          :x="0">
+          {{ group.name }}
+        </text>
       </g>
-    </svg>
-  </div>
+    </g>
+  </svg>
 </template>
 
 <script>
@@ -83,7 +102,7 @@ export default {
     },
     barWidth() {
       const data = this.filteredResults.map(r => r.data[0].data).flat();
-      return this.width / (data.length * (this.filteredGender ? 3 : 2) * this.filteredResults[0].data.length);
+      return (this.width + 100) / (data.length * (this.filteredGender ? 4 : 2) * this.filteredResults[0].data.length);
     },
     filteredGender() {
       return this.filters.gender.find(f => !f.active);

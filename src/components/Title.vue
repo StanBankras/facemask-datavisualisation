@@ -15,6 +15,7 @@ div {
   padding: 1rem;
   background-color: var(--green);
   margin-bottom: 2rem;
+  max-width: 40rem;
   h1 {
     color: var(--darkest);
     font-size: 19px;

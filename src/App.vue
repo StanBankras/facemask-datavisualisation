@@ -1,20 +1,22 @@
 <template>
   <div id="app">
-    <title-comp title="Welke mondkapjes worden gedragen op het Amstelstation?"/>
-    <p>
-      Mondkapjes zijn er in verschillende soorten en maten.
-      Vanaf 1 december 2020 zijn mondkapjes verplicht in publieke binnenruimten.
-      Zo ook in het openbaar vervoer en in de stations zelf.
-    </p>
-    <p>
-      Op woensdag 2 december hebben wij geobserveerd welke mondkapjes gedragen
-      worden door welk geslacht en welke leeftijdsgroepen.
-    </p>
-    <h2>Ontdek de data</h2>
-    <p>Klik op welke data je wel of niet wilt weergeven</p>
-    <filters :initial="filterGroups" @update="f => filterGroups = f"/>
-    <chart :filters="filterGroups"/>
-  </div>
+    <div class="wrap">
+      <title-comp title="Welke mondkapjes worden gedragen op het Amstelstation?"/>
+      <p>
+        Mondkapjes zijn er in verschillende soorten en maten.
+        Vanaf 1 december 2020 zijn mondkapjes verplicht in publieke binnenruimten.
+        Zo ook in het openbaar vervoer en in de stations zelf.
+      </p>
+      <p>
+        Op woensdag 2 december hebben wij geobserveerd welke mondkapjes gedragen
+        worden door welk geslacht en welke leeftijdsgroepen.
+      </p>
+      <h2>Ontdek de data</h2>
+      <p>Klik op welke data je wel of niet wilt weergeven</p>
+      <filters :initial="filterGroups" @update="f => filterGroups = f"/>
+      <chart :filters="filterGroups"/>
+    </div>
+    </div>
 </template>
 
 <script>
@@ -79,7 +81,7 @@ export default {
 }
 </script>
 
-<style>
+<style lang="scss">
 * {
   margin: 0;
   padding: 0;
@@ -93,12 +95,17 @@ export default {
   height: 100vh;
   overflow-x: hidden;
   padding: 2rem;
+  > .wrap {
+    margin: 0 auto;
+    max-width: 40rem;
+  }
 }
 p {
   margin-bottom: 1rem;
   font-size: 14px;
   line-height: 20px;
   color: var(--darken);
+  max-width: 40rem;
 }
 h2 {
   color: var(--darkest);

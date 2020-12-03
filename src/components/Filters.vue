@@ -65,6 +65,7 @@ export default {
 <style lang="scss" scoped>
 #filters {
   margin-bottom: 1.5rem;
+  max-width: 40rem;
 }
 .buttons {
   display: grid;
