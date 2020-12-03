@@ -14,9 +14,10 @@
       <h2>Ontdek de data</h2>
       <p>Klik op welke data je wel of niet wilt weergeven</p>
       <filters :initial="filterGroups" @update="f => filterGroups = f"/>
-      <chart :filters="filterGroups"/>
+      <chart :filters="filterGroups" :results="results" :totalPersons="totalPersons"/>
+      <p style="margin-top: 1.5rem; margin-left: 1rem; font-size: 11px; font-style: italic;">Gebaseerd op {{ allPersons.female }} getelde vrouwen en {{ allPersons.male }} getelde mannen</p>
     </div>
-    </div>
+  </div>
 </template>
 
 <script>
@@ -26,8 +27,52 @@ import Chart from '@/components/Chart';
 
 export default {
   components: { TitleComp, Filters, Chart },
+  computed: {
+    totalPersons() {
+      return {
+        male: {
+          '0-30 jaar': this.results.reduce((acc, curr) => acc + curr.data.find(c => c.age === '0-30 jaar').data[0], 0),
+          '31-60 jaar': this.results.reduce((acc, curr) => acc + curr.data.find(c => c.age === '31-60 jaar').data[0], 0),
+          '60+ jaar': this.results.reduce((acc, curr) => acc + curr.data.find(c => c.age === '60+ jaar').data[0], 0)
+        },
+        female: {
+          '0-30 jaar': this.results.reduce((acc, curr) => acc + curr.data.find(c => c.age === '0-30 jaar').data[1], 0),
+          '31-60 jaar': this.results.reduce((acc, curr) => acc + curr.data.find(c => c.age === '31-60 jaar').data[1], 0),
+          '60+ jaar': this.results.reduce((acc, curr) => acc + curr.data.find(c => c.age === '60+ jaar').data[1], 0)
+        }
+      }
+    },
+    allPersons() {
+      return {
+        male: Object.values(this.totalPersons.male).reduce((acc, curr) => acc + curr, 0),
+        female: Object.values(this.totalPersons.female).reduce((acc, curr) => acc + curr, 0)
+      }
+    }
+  },
   data() {
     return {
+      results: [
+        {
+          name: 'Wegwerp',
+          data: [{ age: '0-30 jaar', data: [82, 64] }, { age: '31-60 jaar', data: [34, 18] }, { age: '60+ jaar', data: [11, 8] }]
+        },
+        {
+          name: 'Zelf gemaakt',
+          data: [{ age: '0-30 jaar', data: [23, 32] }, { age: '31-60 jaar', data: [7, 11] }, { age: '60+ jaar', data: [1, 5] }]
+        },
+        {
+          name: 'Textiel',
+          data: [{ age: '0-30 jaar', data: [78, 68] }, { age: '31-60 jaar', data: [22, 18] }, { age: '60+ jaar', data: [3, 7] }]
+        },
+        {
+          name: 'Stof masker',
+          data: [{ age: '0-30 jaar', data: [1, 1] }, { age: '31-60 jaar', data: [3, 1] }, { age: '60+ jaar', data: [1, 1] }]
+        },
+        {
+          name: 'Geen',
+          data: [{ age: '0-30 jaar', data: [18, 16] }, { age: '31-60 jaar', data: [1, 2] }, { age: '60+ jaar', data: [2, 1] }]
+        }
+      ],
       filterGroups: {
         type: [
           {
@@ -95,6 +140,9 @@ export default {
   height: 100vh;
   overflow-x: hidden;
   padding: 2rem;
+  @media(max-width: 540px) {
+    padding: 1rem;
+  }
   > .wrap {
     margin: 0 auto;
     max-width: 40rem;

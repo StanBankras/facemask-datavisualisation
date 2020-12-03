@@ -24,13 +24,13 @@
         <text fill="currentColor" x="-9" dy="0.32em">{{ tick }}</text>
       </g>
     </g>
-    <g class="bars" :transform="`translate(${ yPadding + 20 }, 0)`">
+    <g class="bars" :transform="`translate(${ width < 540 ? yPadding : yPadding + 20 }, 0)`">
       <g
         :transform="`translate(${ i * group.data.length * barWidth * 3 }, 0)`"
         v-for="(group, i) in filteredResults"
         :key="group.name">
         <g
-          v-for="bars in group.data"
+          v-for="(bars, j) in group.data"
           :key="bars.age">
           <rect
             v-for="(bar, i) in bars.data"
@@ -44,7 +44,7 @@
           <text
             fill="currentColor"
             style="font-size: 10px;"
-            :y="height - 30"
+            :y="width < 540 ? j % 2 === 0 && filteredResults.length > 3 ? height - 35 : height - 25 : height - 25"
             dy="0.71em"
             :x="xSubgroup(bars.age)">
             {{ bars.age.split(' ')[0] }}
@@ -60,6 +60,13 @@
         </text>
       </g>
     </g>
+    <g>
+      <text
+        :transform="`translate(10, 200) rotate(270)`"
+        style="font-size: 11px;">
+        % personen per leeftijdscategorie
+      </text>
+    </g>
   </svg>
 </template>
 
@@ -67,7 +74,7 @@
 import { scaleBand, scaleLinear } from 'd3';
 
 export default {
-  props: ['filters'],
+  props: ['filters', 'results', 'totalPersons'],
   computed: {
     groups() {
       return this.filteredResults.map(r => r.name);
@@ -79,6 +86,9 @@ export default {
     heighest() {
       const data = this.filteredResults.map(r => r.data.map(x => x.data));
       return Math.max(...data.flat().flat());
+    },
+    width() {
+      return Math.min(this.windowWidth - (this.windowWidth < 540 ? 32 : 64), 40 * 16);
     },
     xAxis() {
       return scaleBand()
@@ -102,24 +112,12 @@ export default {
     },
     barWidth() {
       const data = this.filteredResults.map(r => r.data[0].data).flat();
-      return (this.width + 100) / (data.length * (this.filteredGender ? 4 : 2) * this.filteredResults[0].data.length);
+      const width = (this.width + 100) / (data.length * (this.filteredGender ? 4 : 2) * this.filteredResults[0].data.length);
+      if(this.windowWidth < 540) return width * 0.95;
+      return width;
     },
     filteredGender() {
       return this.filters.gender.find(f => !f.active);
-    },
-    totalPersons() {
-      return {
-        male: {
-          '0-30 jaar': this.results.reduce((acc, curr) => acc + curr.data.find(c => c.age === '0-30 jaar').data[0], 0),
-          '31-60 jaar': this.results.reduce((acc, curr) => acc + curr.data.find(c => c.age === '31-60 jaar').data[0], 0),
-          '60+ jaar': this.results.reduce((acc, curr) => acc + curr.data.find(c => c.age === '60+ jaar').data[0], 0)
-        },
-        female: {
-          '0-30 jaar': this.results.reduce((acc, curr) => acc + curr.data.find(c => c.age === '0-30 jaar').data[1], 0),
-          '31-60 jaar': this.results.reduce((acc, curr) => acc + curr.data.find(c => c.age === '31-60 jaar').data[1], 0),
-          '60+ jaar': this.results.reduce((acc, curr) => acc + curr.data.find(c => c.age === '60+ jaar').data[1], 0)
-        }
-      }
     },
     relativeResults() {
       return this.results.map(entry => {
@@ -163,32 +161,20 @@ export default {
   },
   data() {
     return {
-      width: 600,
       height: 300,
       xPadding: 5,
       yPadding: 40,
-      results: [
-        {
-          name: 'Wegwerp',
-          data: [{ age: '0-30 jaar', data: [82, 64] }, { age: '31-60 jaar', data: [34, 18] }, { age: '60+ jaar', data: [11, 8] }]
-        },
-        {
-          name: 'Zelf gemaakt',
-          data: [{ age: '0-30 jaar', data: [23, 32] }, { age: '31-60 jaar', data: [7, 11] }, { age: '60+ jaar', data: [1, 5] }]
-        },
-        {
-          name: 'Textiel',
-          data: [{ age: '0-30 jaar', data: [78, 68] }, { age: '31-60 jaar', data: [22, 18] }, { age: '60+ jaar', data: [3, 7] }]
-        },
-        {
-          name: 'Stof masker',
-          data: [{ age: '0-30 jaar', data: [1, 1] }, { age: '31-60 jaar', data: [3, 1] }, { age: '60+ jaar', data: [1, 1] }]
-        },
-        {
-          name: 'Geen',
-          data: [{ age: '0-30 jaar', data: [18, 16] }, { age: '31-60 jaar', data: [1, 2] }, { age: '60+ jaar', data: [2, 1] }]
-        }
-      ]
+      windowWidth: window.innerWidth
+    }
+  },
+  mounted() {
+    this.$nextTick(() => {
+      window.addEventListener('resize', this.onResize);
+    });
+  },
+  methods: {
+    onResize() {
+      this.windowWidth = window.innerWidth;
     }
   }
 }
