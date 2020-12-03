@@ -34,13 +34,14 @@
           :key="bars.age">
           <rect
             v-for="(bar, i) in bars.data"
-            :key="bar.age"
+            :key="bar"
             :height="yAxis(bar)"
             :width="barWidth"
             :y="height - yAxis(bar) - 40"
             :x="xSubgroup(bars.age) + barWidth * i"
             :fill="filteredGender ? filteredGender.name === 'Vrouw' ? femaleColor : maleColor : i === 0 ? maleColor : femaleColor"
             style="stroke: #55828B; stroke-width: 1px"
+            v-tooltip="results.find(x => x.name === group.name).data.find(x => x.age === bars.age).data[(filteredGender && filteredGender.name === 'Man') ? 0 : (filteredGender && filteredGender.name === 'Vrouw') ? 1 : i] + ' personen'"
           />
           <text
             fill="currentColor"
@@ -154,7 +155,7 @@ export default {
           data: d.data.map(x => {
             return {
               age: x.age,
-              data: gendersFiltered.length === 0 || gendersFiltered.length === 2 ? x.data : gendersFiltered[0].name === 'Man' ? [x.data[0]] : [x.data[1]]
+              data: gendersFiltered.length === 0 || gendersFiltered.length === 2 ? x.data : gendersFiltered[0].name === 'Man' ? [x.data[1]] : [x.data[0]]
             }
           })
         }
