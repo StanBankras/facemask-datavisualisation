@@ -39,7 +39,7 @@
             :width="barWidth"
             :y="height - yAxis(bar) - 40"
             :x="xSubgroup(bars.age) + barWidth * i"
-            :fill="filteredGender ? filteredGender.name === 'Man' ? femaleColor : maleColor : i === 0 ? maleColor : femaleColor"
+            :fill="filteredGender ? filteredGender.name === 'Vrouw' ? femaleColor : maleColor : i === 0 ? maleColor : femaleColor"
             style="stroke: #55828B; stroke-width: 1px"
           />
           <text
@@ -111,14 +111,15 @@ export default {
     yTicks() {
       return this.yAxis.ticks(8);
     },
+    filteredGender() {
+      if(this.filters.gender.filter(x => !x.active).length === 0 || this.filters.gender.filter(x => !x.active).length === 2) return undefined;
+      return this.filters.gender.find(x => !x.active);
+    },
     barWidth() {
       const data = this.filteredResults.map(r => r.data[0].data).flat();
       const width = (this.width + 100) / (data.length * (this.filteredGender ? 4 : 2) * this.filteredResults[0].data.length);
       if(this.windowWidth < 540) return width * 0.95;
       return width;
-    },
-    filteredGender() {
-      return this.filters.gender.find(f => !f.active);
     },
     relativeResults() {
       return this.results.map(entry => {
@@ -137,27 +138,30 @@ export default {
       let results = this.relativeResults;
 
       // Filter age groups
+      if(this.filters.age.find(x => !x.active))
       results = results.map(d => {
         return {
           name: d.name,
-          data: d.data.filter(x => this.filters.age.find(a => a.name === x.age).active)
+          data: d.data.filter(x => !this.filters.age.find(a => a.name === x.age).active)
         }
       });
 
       // Filter male/female
+      const gendersFiltered = this.filters.gender.filter(x => x.active);
       results = results.map(d => {
         return {
           name: d.name,
           data: d.data.map(x => {
             return {
               age: x.age,
-              data: !this.filteredGender ? x.data : this.filteredGender.name === 'Man' ? [x.data[1]] : [x.data[0]]
+              data: gendersFiltered.length === 0 || gendersFiltered.length === 2 ? x.data : gendersFiltered[0].name === 'Man' ? [x.data[0]] : [x.data[1]]
             }
           })
         }
       });
 
-      return results.filter(entry => this.filters.type.find(t => t.name === entry.name).active);
+      if(!this.filters.type.find(x => !x.active)) return results;
+      return results.filter(entry => !this.filters.type.find(t => t.name === entry.name).active);
     }
   },
   data() {

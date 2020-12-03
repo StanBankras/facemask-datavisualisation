@@ -7,7 +7,7 @@
           v-for="filter in filters.type"
           :key="filter.name"
           @click="toggle(filter.name, 'type')"
-          :class="{ active: filter.active }"
+          :class="{ active: !filter.active }"
           class="filter-btn">{{ filter.name }}</button>
       </div>
     </div>
@@ -19,7 +19,7 @@
             v-for="filter in filters.gender"
             :key="filter.name"
              @click="toggle(filter.name, 'gender')"
-             :class="{ active: filter.active }"
+             :class="{ active: !filter.active }"
             class="filter-btn">{{ filter.name }}</button>
         </div>
       </div>
@@ -30,7 +30,7 @@
             v-for="filter in filters.age"
             :key="filter.name"
              @click="toggle(filter.name, 'age')"
-             :class="{ active: filter.active }"
+             :class="{ active: !filter.active }"
             class="filter-btn">{{ filter.name }}</button>
         </div>
       </div>
@@ -52,11 +52,13 @@ export default {
   methods: {
     toggle(name, category) {
       const found = this.filters[category].find(x => x.name === name);
-      if(this.filters[category].filter(x => x.active).length === 1 && found.active) {
-        return;
-      }
       found.active = !found.active;
       this.$emit('update', this.filters);
+    }
+  },
+  watch: {
+    initial(val) {
+      this.filters = val;
     }
   }
 }
@@ -75,11 +77,11 @@ export default {
     padding: 0.3rem;
     border: 0px;
     outline: none;
-    background-color: var(--red);
-    color: var(--white);
     font-weight: bold;
     font-size: 12px;
     min-height: 37.5px;
+    background-color: var(--red);
+    color: var(--white);
     cursor: pointer;
     transition: .5s;
     &.active {

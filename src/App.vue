@@ -13,7 +13,7 @@
       </p>
       <h2>Ontdek de data</h2>
       <p>Klik op welke data je wel of niet wilt weergeven</p>
-      <filters :initial="filterGroups" @update="f => filterGroups = f"/>
+      <filters :initial="filterGroups" @update="f => updateFilters(f)"/>
       <chart :filters="filterGroups" :results="results" :totalPersons="totalPersons"/>
       <p style="margin-top: 1.5rem; margin-left: 1rem; font-size: 11px; font-style: italic;">Gebaseerd op {{ allPersons.female }} getelde vrouwen en {{ allPersons.male }} getelde mannen</p>
     </div>
@@ -121,6 +121,16 @@ export default {
           }
         ]
       }
+    }
+  },
+  mounted() {
+    const filters = window.localStorage.getItem('filters');
+    if(filters) this.filterGroups = JSON.parse(filters);
+  },
+  methods: {
+    updateFilters(filters) {
+      this.filterGroups = filters;
+      window.localStorage.setItem('filters', JSON.stringify(filters));
     }
   }
 }
