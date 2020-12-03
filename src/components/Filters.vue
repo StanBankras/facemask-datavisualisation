@@ -3,12 +3,15 @@
     <div class="type">
       <p>Type mondmasker</p>
       <div class="buttons">
-        <button
+        <div
           v-for="filter in filters.type"
-          :key="filter.name"
-          @click="toggle(filter.name, 'type')"
-          :class="{ active: !filter.active }"
-          class="filter-btn">{{ filter.name }}</button>
+          :key="filter.name">
+          <img @click="toggle(filter.name, 'type')" :src="require(`@/assets/img/${ filter.name.toLowerCase().split(' ').join('') }.gif`)" alt="">
+          <button
+            @click="toggle(filter.name, 'type')"
+            :class="{ active: !filter.active }"
+            class="filter-btn">{{ filter.name }}</button>
+        </div>
       </div>
     </div>
     <div class="wrap">
@@ -72,6 +75,19 @@ export default {
 .buttons {
   display: grid;
   gap: 0.5rem;
+  div {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    width: 100%;
+    img {
+      width: 80px;
+      cursor: pointer;
+      @media(max-width: 490px) {
+        width: 60px; 
+      }
+    }
+  }
   .filter-btn {
     user-select: none;
     padding: 0.3rem;
