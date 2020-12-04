@@ -31,12 +31,12 @@ export default {
     totalPersons() {
       return {
         male: {
-          '0-30 jaar': this.results.reduce((acc, curr) => acc + curr.data.find(c => c.age === '0-30 jaar').data[0], 0),
+          '13-30 jaar': this.results.reduce((acc, curr) => acc + curr.data.find(c => c.age === '13-30 jaar').data[0], 0),
           '31-60 jaar': this.results.reduce((acc, curr) => acc + curr.data.find(c => c.age === '31-60 jaar').data[0], 0),
           '60+ jaar': this.results.reduce((acc, curr) => acc + curr.data.find(c => c.age === '60+ jaar').data[0], 0)
         },
         female: {
-          '0-30 jaar': this.results.reduce((acc, curr) => acc + curr.data.find(c => c.age === '0-30 jaar').data[1], 0),
+          '13-30 jaar': this.results.reduce((acc, curr) => acc + curr.data.find(c => c.age === '13-30 jaar').data[1], 0),
           '31-60 jaar': this.results.reduce((acc, curr) => acc + curr.data.find(c => c.age === '31-60 jaar').data[1], 0),
           '60+ jaar': this.results.reduce((acc, curr) => acc + curr.data.find(c => c.age === '60+ jaar').data[1], 0)
         }
@@ -54,23 +54,23 @@ export default {
       results: [
         {
           name: 'Wegwerp',
-          data: [{ age: '0-30 jaar', data: [82, 64] }, { age: '31-60 jaar', data: [34, 18] }, { age: '60+ jaar', data: [11, 8] }]
+          data: [{ age: '13-30 jaar', data: [82, 64] }, { age: '31-60 jaar', data: [34, 18] }, { age: '60+ jaar', data: [11, 8] }]
         },
         {
           name: 'Zelf gemaakt',
-          data: [{ age: '0-30 jaar', data: [23, 32] }, { age: '31-60 jaar', data: [7, 11] }, { age: '60+ jaar', data: [1, 5] }]
+          data: [{ age: '13-30 jaar', data: [23, 32] }, { age: '31-60 jaar', data: [7, 11] }, { age: '60+ jaar', data: [1, 5] }]
         },
         {
           name: 'Textiel',
-          data: [{ age: '0-30 jaar', data: [78, 68] }, { age: '31-60 jaar', data: [22, 18] }, { age: '60+ jaar', data: [3, 7] }]
+          data: [{ age: '13-30 jaar', data: [78, 68] }, { age: '31-60 jaar', data: [22, 18] }, { age: '60+ jaar', data: [3, 7] }]
         },
         {
           name: 'Stof masker',
-          data: [{ age: '0-30 jaar', data: [1, 1] }, { age: '31-60 jaar', data: [3, 1] }, { age: '60+ jaar', data: [1, 1] }]
+          data: [{ age: '13-30 jaar', data: [1, 1] }, { age: '31-60 jaar', data: [3, 1] }, { age: '60+ jaar', data: [1, 1] }]
         },
         {
           name: 'Geen',
-          data: [{ age: '0-30 jaar', data: [18, 16] }, { age: '31-60 jaar', data: [1, 2] }, { age: '60+ jaar', data: [2, 1] }]
+          data: [{ age: '13-30 jaar', data: [18, 16] }, { age: '31-60 jaar', data: [1, 2] }, { age: '60+ jaar', data: [2, 1] }]
         }
       ],
       filterGroups: {
@@ -108,7 +108,7 @@ export default {
         ],
         age: [
           {
-            name: '0-30 jaar',
+            name: '13-30 jaar',
             active: true
           },
           {
